@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.Window", "src\KristofferStrube.Blazor.Window\KristofferStrube.Blazor.Window.csproj", "{86C6A15E-FFA5-4CF3-9823-BCA6130869E1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.Window.WasmExample", "samples\KristofferStrube.Blazor.Window.WasmExample\KristofferStrube.Blazor.Window.WasmExample.csproj", "{F982EB06-78E1-4051-942C-39E8F3AEA8A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{86C6A15E-FFA5-4CF3-9823-BCA6130869E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86C6A15E-FFA5-4CF3-9823-BCA6130869E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86C6A15E-FFA5-4CF3-9823-BCA6130869E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86C6A15E-FFA5-4CF3-9823-BCA6130869E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F982EB06-78E1-4051-942C-39E8F3AEA8A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F982EB06-78E1-4051-942C-39E8F3AEA8A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F982EB06-78E1-4051-942C-39E8F3AEA8A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F982EB06-78E1-4051-942C-39E8F3AEA8A5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2E458DB0-47D2-4B82-8661-ED5EEF9B2393}
+	EndGlobalSection
+EndGlobal
