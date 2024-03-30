@@ -57,7 +57,7 @@
 
     private async Task OpenPopup()
     {
-        popup = await window.OpenAsync("Popup", features: "popup=true");
+        popup = await window.OpenAsync("?popup=true", features: "popup=true");
         if (popup is not null)
         {
             popupMessageEventListener = await EventListener<MessageEvent>.CreateAsync(JSRuntime, async e =>

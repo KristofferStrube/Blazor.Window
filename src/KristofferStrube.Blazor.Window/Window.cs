@@ -88,7 +88,7 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers
     /// <param name="options">The options used for posting the message. Defining the target origin and what objects should be transfered.</param>
     public async Task PostMessage(object message, WindowPostMessageOptions? options = null)
     {
-        await JSReference.InvokeVoidAsync("postMessage", message);
+        await JSReference.InvokeVoidAsync("postMessage", message, options);
     }
 
     /// <inheritdoc/>

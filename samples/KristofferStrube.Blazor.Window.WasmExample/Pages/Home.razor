@@ -1,7 +1,45 @@
 ﻿@page "/"
+@inject IWindowService WindowService
 
-<PageTitle>Blazor Window - Home</PageTitle>
+@if (!Popup)
+{
+    <PageTitle>Blazor Window - Home</PageTitle>
 
-<h1>Hello, world!</h1>
+    <h1>Hello, world!</h1>
 
-Welcome to your new app.
+    <p>Welcome to your new app.</p>
+}
+else
+{
+    <PageTitle>Blazor Window - Pop-up</PageTitle>
+
+    <h2>Pop-up</h2>
+
+    <p>
+        This is a popup. When you post a message from here the opener window is notified of this.
+    </p>
+
+    <label for="message">Message: </label>
+    <input @bind=message id="message" class="form-control" />
+    <br />
+    <button @onclick=PostMessage class="btn btn-primary">Post</button>
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    public bool Popup { get; set; } = false;
+
+    string message = "";
+    Window window = default!;
+    string id = Random.Shared.Next(10).ToString();
+
+    protected override async Task OnInitializedAsync()
+    {
+        window = await WindowService.GetWindowAsync();
+    }
+
+    private async Task PostMessage()
+    {
+        await window.PostMessage($"From Pop-up {id}: {message}");
+    }
+}
