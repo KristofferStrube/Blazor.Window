@@ -1,0 +1,82 @@
+﻿@page "/Messages"
+@using KristofferStrube.Blazor.DOM
+@inject IWindowService WindowService
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<PageTitle>Blazor Window - Messages</PageTitle>
+
+<h2>Messages</h2>
+
+<p>
+    Different windows can send message to each other if they are related to each other.
+    This includes active windows from the same domain, service workers associated to the same domain, and windows hosted by other windows like pop-ups and iframes.
+    <br />
+    On This page we have subscribed to messages posted to this window.
+    And here you then have the options to post an event from the same window.
+    In a real use case we would probably expect there to come events from some external service or window.
+</p>
+
+<label for="message">Message: </label>
+<input @bind=message id="message" class="form-control" />
+<br />
+<button @onclick=PostMessage class="btn btn-primary">Post</button>
+<button @onclick=OpenPopup class="btn btn-primary">Open Pop-up</button>
+
+@if (messageLog != "")
+{
+    <br />
+    <br />
+    <textarea style="width:100%;height:40vh" disabled>@messageLog</textarea>
+}
+
+@code {
+    string message = "";
+    string messageLog = "";
+
+    Window window = default!;
+    Window? popup;
+    EventListener<MessageEvent> messageEventListener = default!;
+    EventListener<MessageEvent> popupMessageEventListener = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        window = await WindowService.GetWindowAsync();
+        messageEventListener = await EventListener<MessageEvent>.CreateAsync(JSRuntime, async e =>
+        {
+            messageLog = $"{await e.Data.GetValueAsync()}\n{messageLog}";
+            StateHasChanged();
+        });
+        await window.AddOnMessageEventListenerAsync(messageEventListener);
+    }
+
+    private async Task PostMessage()
+    {
+        await window.PostMessage($"From Window: {message}");
+    }
+
+    private async Task OpenPopup()
+    {
+        popup = await window.OpenAsync("/Popup", features: "popup=true");
+        if (popup is not null)
+        {
+            popupMessageEventListener = await EventListener<MessageEvent>.CreateAsync(JSRuntime, async e =>
+            {
+                messageLog = $"{await e.Data.GetValueAsync()}\n{messageLog}";
+                StateHasChanged();
+            });
+            await popup.AddOnMessageEventListenerAsync(popupMessageEventListener);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await window.RemoveOnMessageChangeEventListenerAsync(messageEventListener);
+        await messageEventListener.DisposeAsync();
+        if (popup is not null)
+        {
+            await popup.RemoveOnMessageChangeEventListenerAsync(popupMessageEventListener);
+            await popup.DisposeAsync();
+        }
+    }
+}

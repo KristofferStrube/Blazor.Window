@@ -1,0 +1,34 @@
+﻿@page "/Popup"
+@using KristofferStrube.Blazor.DOM
+@inject IWindowService WindowService
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Blazor Window - Pop-up</PageTitle>
+
+<h2>Pop-up</h2>
+
+<p>
+    This is a popup. When you post a message from here the opener window is notified of this.
+</p>
+
+<label for="message">Message: </label>
+<input @bind=message id="message" class="form-control" />
+<br />
+<button @onclick=PostMessage class="btn btn-primary">Post</button>
+
+@code {
+    string message = "";
+    Window opener = default!;
+    string id = Random.Shared.Next(10).ToString();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Window window = await WindowService.GetWindowAsync();
+        opener = window;
+    }
+
+    private async Task PostMessage()
+    {
+        await opener.PostMessage($"From Pop-up-{id}: {message}");
+    }
+}

@@ -14,16 +14,20 @@ public class WindowService : IAsyncDisposable, IWindowService
     {
         windowTask = new(async () =>
         {
-            IJSObjectReference jSInstance = await jSRuntime.InvokeAsync<IJSObjectReference>("this.valueOf");
+            IJSObjectReference jSInstance = await jSRuntime.InvokeAsync<IJSObjectReference>("window.valueOf");
             return await Window.CreateAsync(jSRuntime, jSInstance);
         });
     }
 
-    public async Task<Window> GetMediaDevicesAsync()
+    /// <inheritdoc/>
+    public async Task<Window> GetWindowAsync()
     {
         return await windowTask.Value;
     }
 
+    /// <summary>
+    /// Disposes the service.
+    /// </summary>
     public async ValueTask DisposeAsync()
     {
         if (windowTask.IsValueCreated)
