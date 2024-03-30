@@ -1,13 +1,20 @@
 ﻿@page "/"
 @inject IWindowService WindowService
 
-@if (!Popup)
+@if (!Popup.HasValue)
 {
     <PageTitle>Blazor Window - Home</PageTitle>
 
-    <h1>Hello, world!</h1>
+    <p>On this page we try out opening the different user prompts. To try out the other parts of the interface check the menu.</p>
 
-    <p>Welcome to your new app.</p>
+    <button class="btn btn-primary" @onclick=Alert >Open Alert</button>
+    <button class="btn btn-primary" @onclick=Confirm >Open Confirm dialog</button>
+    <button class="btn btn-primary" @onclick=Prompt >Open Prompt</button>
+    <br />
+    @if (response is not null)
+    {
+        <p>response: <code>@response</code></p>
+    }
 }
 else
 {
@@ -26,20 +33,38 @@ else
 }
 
 @code {
-    [SupplyParameterFromQuery]
-    public bool Popup { get; set; } = false;
+    string? response;
 
-    string message = "";
+    string message = "My Pop-up Message";
     Window window = default!;
-    string id = Random.Shared.Next(10).ToString();
+
+    [SupplyParameterFromQuery]
+    public int? Popup { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         window = await WindowService.GetWindowAsync();
     }
 
+    private async Task Alert()
+    {
+        await window.AlertAsync("You need to close this to continue!");
+        response = null;
+    }
+
+    private async Task Confirm()
+    {
+        response = (await window.ConfirmAsync("You need to confirm this to continue!")).ToString();
+    }
+
+
+    private async Task Prompt()
+    {
+        response = (await window.PromptAsync("What is your name?", "Bob"))?.ToString();
+    }
+
     private async Task PostMessage()
     {
-        await window.PostMessage($"From Pop-up {id}: {message}");
+        await window.PostMessage($"From Pop-up {Popup}: {message}");
     }
 }

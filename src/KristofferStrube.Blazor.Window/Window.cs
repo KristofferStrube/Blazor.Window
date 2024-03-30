@@ -75,10 +75,56 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers
         return jSInstance is null ? null : new(JSRuntime, jSInstance, new() { DisposesJSReference = true });
     }
 
+    /// <summary>
+    /// Opens a window to show <paramref name="url"/>, and returns it. <paramref name="target"/> gives the name of the new window.
+    /// If a window already exists with that name, it is reused.
+    /// </summary>
+    /// <param name="url">Defaults to <c>"about:blank"</c></param>
+    /// <param name="target">Defaults to <c>"_blank"</c></param>
+    /// <param name="features">Can contain a set of comma-separated tokens <c>noopener</c>, <c>noreferrer</c>, and <c>popup</c>.</param>
+    /// <returns>The opened <see cref="Window"/> if it was successful.</returns>
     public async Task<Window?> OpenAsync(string url = "", string target = "_blank", string features = "")
     {
         IJSObjectReference jSInstance = await JSReference.InvokeAsync<IJSObjectReference>("open", url, target, features);
         return new(JSRuntime, jSInstance, new() { DisposesJSReference = true });
+    }
+
+    /// <summary>
+    /// Displays a modal alert, and waits for the user to dismiss it.
+    /// </summary>
+    public async Task AlertAsync()
+    {
+        await JSReference.InvokeVoidAsync("alert");
+    }
+
+    /// <summary>
+    /// Displays a modal alert with the given <paramref name="message"/>, and waits for the user to dismiss it.
+    /// </summary>
+    /// <param name="message">The message that will displayed in the dialog.</param>
+    public async Task AlertAsync(string message)
+    {
+        await JSReference.InvokeVoidAsync("alert", message);
+    }
+
+    /// <summary>
+    /// Displays a modal OK/Cancel prompt with the given message, waits for the user to dismiss it, and returns <see langword="true"/> if the user clicks OK and <see langword="false"/> if the user clicks Cancel.
+    /// </summary>
+    /// <param name="message">The message that will displayed in the dialog.</param>
+    public async Task<bool> ConfirmAsync(string message = "")
+    {
+        return await JSReference.InvokeAsync<bool>("confirm", message);
+    }
+
+    /// <summary>
+    /// Displays a modal text control prompt with the given <paramref name="message"/>, waits for the user to dismiss it, and returns the value that the user entered.
+    /// If the user cancels the prompt, then returns <see langword="null"/> instead.
+    /// If the <paramref name="defaultValue"/> is set, then the given value is used as a default.
+    /// </summary>
+    /// <param name="message">The message that will displayed in the dialog.</param>
+    /// <param name="defaultValue"></param>
+    public async Task<string?> PromptAsync(string message = "", string defaultValue = "")
+    {
+        return await JSReference.InvokeAsync<string>("prompt", message, defaultValue);
     }
 
     /// <summary>

@@ -12,9 +12,8 @@
     Different windows can send message to each other if they are related to each other.
     This includes active windows from the same domain, service workers associated to the same domain, and windows hosted by other windows like pop-ups and iframes.
     <br />
-    On This page we have subscribed to messages posted to this window.
-    And here you then have the options to post an event from the same window.
-    In a real use case we would probably expect there to come events from some external service or window.
+    On this page we have subscribed to messages posted to this window and any other windows that it will host.
+    You then have the option to post an event from the same window or open a pop-up and post an event from there.
 </p>
 
 <label for="message">Message: </label>
@@ -31,8 +30,9 @@
 }
 
 @code {
-    string message = "";
+    string message = "My Message";
     string messageLog = "";
+    int popupCount = 1;
 
     Window window = default!;
     Window? popup;
@@ -57,7 +57,7 @@
 
     private async Task OpenPopup()
     {
-        popup = await window.OpenAsync("?popup=true", features: "popup=true");
+        popup = await window.OpenAsync($"?popup={popupCount++}", features: "popup=true");
         if (popup is not null)
         {
             popupMessageEventListener = await EventListener<MessageEvent>.CreateAsync(JSRuntime, async e =>
