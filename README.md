@@ -24,6 +24,10 @@ These functionalities are vast and we do not wish to support them all as some of
 - ✅ Event listeners for events related to the actions available in the window like changes in internet connectivity, changes in navigation location, or when the page is shown or hidden.
 
 **This wrapper is still being scoped so actual development has not been started.**
+# Demo
+The sample project can be demoed at https://kristofferstrube.github.io/Blazor.Window/
+
+On each page, you can find the corresponding code for the example in the top right corner.
 
 # Related repositories
 The library uses the following other packages to support its features:
