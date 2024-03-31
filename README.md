@@ -7,9 +7,9 @@
 
 # Blazor.Window
 A Blazor wrapper for the [Window interface from the HTML Specification.](https://html.spec.whatwg.org/#the-window-object)
-This interface standardizes methods for controlling the global object used in browser windows called `Window`. This project implements a wrapper around the interface and its types for Blazor so that we can easily and safely work with all the method, attributes, and events surfaced as a part of the `Window` interface.
+This interface standardizes methods for controlling the global object used in browser windows called `Window`. This project implements a wrapper around the interface and its types for Blazor so that we can easily and safely work with all the methods, attributes, and events surfaced in the `Window` interface.
 
-These functionalities are vast and we do not wish to support them all as some of them have little use or work against the principles of Blazor. Here I have made a high-level list of the different functionalities that the `Window` interface supply and marked which this wrapper will cover.
+These functionalities are vast, and we do not wish to support them all, as some of them are of little use or work against the principles of Blazor. Here, I have made a high-level list of the different functionalities that the `Window` interface supplies and marked which this wrapper will cover.
 
 - 🚫 Access to the top level `Document` of the window.
 - ✅ Navigation control for the window.
@@ -19,11 +19,11 @@ These functionalities are vast and we do not wish to support them all as some of
 - ✅ Option to open a new window given some URL and target.
 - 🚫 Attributes giving information about the user agent through the `Navigator`.
 - ✅ Initialize alert, confirm, prompt, and print user prompts.
-- ✅ Posting messages to the window itself and listening for messages sent to this window.
-- ✅ Event listeners for events that are triggered when the user interacts with the window like mouse click, scroll, resize, etc.
-- ✅ Event listeners for events related to the actions available in the window like changes in internet connectivity, changes in navigation location, or when the page is shown or hidden.
+- ✅ Posting messages to the window and listening for messages sent to it.
+- ✅ Event listeners for events that are triggered when the user interacts with the window, such as mouse clicks, scrolling, resizing, etc.
+- ✅ Event listeners for events related to the actions available in the window, such as changes in internet connectivity, changes in navigation location, or when the page is shown or hidden.
 
-**This wrapper is still being scoped so actual development has not been started.**
+**This wrapper is still under development.**
 # Demo
 The sample project can be demoed at https://kristofferstrube.github.io/Blazor.Window/
 
