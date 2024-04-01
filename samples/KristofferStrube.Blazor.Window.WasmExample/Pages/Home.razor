@@ -65,6 +65,6 @@ else
 
     private async Task PostMessage()
     {
-        await window.PostMessage($"From Pop-up {Popup}: {message}");
+        await window.PostMessage($"From Pop-up {Popup} \"{message}\"");
     }
 }

@@ -22,29 +22,38 @@
 <button @onclick=PostMessage class="btn btn-primary">Post</button>
 <button @onclick=OpenPopup class="btn btn-primary">Open Pop-up</button>
 
-@if (messageLog != "")
+@if (messageLogs.Count is not 0)
 {
     <br />
     <br />
-    <textarea style="width:100%;height:40vh" disabled>@messageLog</textarea>
+    <div style="background:#eee;border:1px black solid;padding:5px;">
+        @foreach (LogEntry log in messageLogs)
+        {
+            <div>
+                <small><b>Origin: </b>@log.origin</small>
+                <br />
+                @log.message
+                <hr />
+            </div>
+        }
+    </div>
 }
 
 @code {
     string message = "My Message";
-    string messageLog = "";
+    List<LogEntry> messageLogs = new();
     int popupCount = 1;
 
     Window window = default!;
     Window? popup;
     EventListener<MessageEvent> messageEventListener = default!;
-    EventListener<MessageEvent> popupMessageEventListener = default!;
 
     protected override async Task OnInitializedAsync()
     {
         window = await WindowService.GetWindowAsync();
         messageEventListener = await EventListener<MessageEvent>.CreateAsync(JSRuntime, async e =>
         {
-            messageLog = $"{await e.Data.GetValueAsync()}\n{messageLog}";
+            messageLogs.Add(await LogEntry.CreateAsync(e));
             StateHasChanged();
         });
         await window.AddOnMessageEventListenerAsync(messageEventListener);
@@ -52,7 +61,7 @@
 
     private async Task PostMessage()
     {
-        await window.PostMessage($"From Window: {message}");
+        await window.PostMessage($"From Window \"{message}\"");
     }
 
     private async Task OpenPopup()
@@ -60,23 +69,24 @@
         popup = await window.OpenAsync($"?popup={popupCount++}", features: "popup=true");
         if (popup is not null)
         {
-            popupMessageEventListener = await EventListener<MessageEvent>.CreateAsync(JSRuntime, async e =>
-            {
-                messageLog = $"{await e.Data.GetValueAsync()}\n{messageLog}";
-                StateHasChanged();
-            });
-            await popup.AddOnMessageEventListenerAsync(popupMessageEventListener);
+            await popup.AddOnMessageEventListenerAsync(messageEventListener);
         }
     }
 
     public async ValueTask DisposeAsync()
     {
         await window.RemoveOnMessageChangeEventListenerAsync(messageEventListener);
-        await messageEventListener.DisposeAsync();
         if (popup is not null)
         {
-            await popup.RemoveOnMessageChangeEventListenerAsync(popupMessageEventListener);
+            await popup.RemoveOnMessageChangeEventListenerAsync(messageEventListener);
             await popup.DisposeAsync();
         }
+        await messageEventListener.DisposeAsync();
+    }
+
+    public record LogEntry(string message, string origin)
+    {
+        public static async Task<LogEntry> CreateAsync(MessageEvent e) =>
+            new(await e.GetDataAsync<string>(), await e.GetOriginAsync());
     }
 }
