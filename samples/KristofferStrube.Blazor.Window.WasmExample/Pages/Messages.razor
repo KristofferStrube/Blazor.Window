@@ -75,10 +75,10 @@
 
     public async ValueTask DisposeAsync()
     {
-        await window.RemoveOnMessageChangeEventListenerAsync(messageEventListener);
+        await window.RemoveOnMessageEventListenerAsync(messageEventListener);
         if (popup is not null)
         {
-            await popup.RemoveOnMessageChangeEventListenerAsync(messageEventListener);
+            await popup.RemoveOnMessageEventListenerAsync(messageEventListener);
             await popup.DisposeAsync();
         }
         await messageEventListener.DisposeAsync();

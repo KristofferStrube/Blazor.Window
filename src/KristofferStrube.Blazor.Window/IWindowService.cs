@@ -1,6 +1,10 @@
 ﻿
 namespace KristofferStrube.Blazor.Window;
 
+/// <summary>
+/// A service for accessing the global object's associated <see cref="Window"/>.
+/// </summary>
+/// <remarks><see href="https://html.spec.whatwg.org/#the-window-object">See the API definition here</see>.</remarks>
 public interface IWindowService
 {
     /// <summary>

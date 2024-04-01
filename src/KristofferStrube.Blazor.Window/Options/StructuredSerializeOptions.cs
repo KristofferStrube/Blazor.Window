@@ -3,6 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace KristofferStrube.Blazor.Window.Options;
 
+/// <summary>
+/// The options available when posting a message across all message post implementations.
+/// </summary>
+/// <remarks><see href="https://html.spec.whatwg.org/#structuredserializeoptions">See the API definition here</see>.</remarks>
 public class StructuredSerializeOptions
 {
     /// <summary>

@@ -28,6 +28,7 @@ public class MessageEvent : Event, IJSCreatable<MessageEvent>
         return Task.FromResult(new MessageEvent(jSRuntime, jSReference, options));
     }
 
+    /// <inheritdoc cref="CreateAsync(IJSRuntime, IJSObjectReference, CreationOptions)"/>
     protected MessageEvent(IJSRuntime jSRuntime, IJSObjectReference jSReference, CreationOptions options) : base(jSRuntime, jSReference, options)
     {
         windowHelperTask = new(jSRuntime.GetHelperAsync);

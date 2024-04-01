@@ -2,6 +2,10 @@
 
 namespace KristofferStrube.Blazor.Window.Options;
 
+/// <summary>
+/// The options available when posting a message from a <see cref="Window"/>.
+/// </summary>
+/// <remarks><see href="https://html.spec.whatwg.org/#windowpostmessageoptions">See the API definition here</see>.</remarks>
 public class WindowPostMessageOptions : StructuredSerializeOptions
 {
     /// <summary>

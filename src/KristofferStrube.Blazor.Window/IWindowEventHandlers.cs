@@ -2,6 +2,10 @@
 
 namespace KristofferStrube.Blazor.Window;
 
+/// <summary>
+/// Event handlers that are a part of <see cref="Window"/>.
+/// </summary>
+/// <remarks><see href="https://html.spec.whatwg.org/#windoweventhandlers">See the API definition here</see>.</remarks>
 public interface IWindowEventHandlers
 {
     /// <summary>
@@ -16,5 +20,5 @@ public interface IWindowEventHandlers
     /// </summary>
     /// <param name="callback">The callback <see cref="EventListener{TEvent}"/> that you want to stop listening to events.</param>
     /// <param name="options"><inheritdoc cref="EventTarget.RemoveEventListenerAsync{TEvent}(string, EventListener{TEvent}?, EventListenerOptions?)" path="/param[@name='options']"/></param>
-    public Task RemoveOnMessageChangeEventListenerAsync(EventListener<MessageEvent> callback, EventListenerOptions? options = null);
+    public Task RemoveOnMessageEventListenerAsync(EventListener<MessageEvent> callback, EventListenerOptions? options = null);
 }

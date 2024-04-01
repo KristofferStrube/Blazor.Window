@@ -6,6 +6,10 @@ using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.Window;
 
+/// <summary>
+/// The global object for a browser window.
+/// </summary>
+/// <remarks><see href="https://html.spec.whatwg.org/#the-window-object">See the API definition here</see>.</remarks>
 public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers
 {
     /// <summary>
@@ -144,7 +148,7 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers
     }
 
     /// <inheritdoc/>
-    public async Task RemoveOnMessageChangeEventListenerAsync(EventListener<MessageEvent> callback, EventListenerOptions? options = null)
+    public async Task RemoveOnMessageEventListenerAsync(EventListener<MessageEvent> callback, EventListenerOptions? options = null)
     {
         await RemoveEventListenerAsync("message", callback, options);
     }

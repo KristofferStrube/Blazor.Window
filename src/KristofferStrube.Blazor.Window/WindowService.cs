@@ -2,6 +2,7 @@
 
 namespace KristofferStrube.Blazor.Window;
 
+/// <inheritdoc cref="IWindowService"/>
 public class WindowService : IAsyncDisposable, IWindowService
 {
     private readonly Lazy<Task<Window>> windowTask;
