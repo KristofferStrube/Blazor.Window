@@ -2,8 +2,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/KristofferStrube/Blazor.Window)](https://github.com/KristofferStrube/Blazor.Window/issues)
 [![GitHub forks](https://img.shields.io/github/forks/KristofferStrube/Blazor.Window)](https://github.com/KristofferStrube/Blazor.Window/network/members)
 [![GitHub stars](https://img.shields.io/github/stars/KristofferStrube/Blazor.Window)](https://github.com/KristofferStrube/Blazor.Window/stargazers)
-
-<!--[![NuGet Downloads (official NuGet)](https://img.shields.io/nuget/dt/KristofferStrube.Blazor.Window?label=NuGet%20Downloads)](https://www.nuget.org/packages/KristofferStrube.Blazor.Window/)-->
+[![NuGet Downloads (official NuGet)](https://img.shields.io/nuget/dt/KristofferStrube.Blazor.Window?label=NuGet%20Downloads)](https://www.nuget.org/packages/KristofferStrube.Blazor.Window/)
 
 # Blazor.Window
 A Blazor wrapper for the [Window interface from the HTML Specification.](https://html.spec.whatwg.org/#the-window-object)
