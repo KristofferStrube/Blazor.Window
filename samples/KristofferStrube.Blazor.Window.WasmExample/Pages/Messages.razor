@@ -61,7 +61,7 @@
 
     private async Task PostMessage()
     {
-        await window.PostMessage($"From Window \"{message}\"");
+        await window.PostMessageAsync($"From Window \"{message}\"");
     }
 
     private async Task OpenPopup()

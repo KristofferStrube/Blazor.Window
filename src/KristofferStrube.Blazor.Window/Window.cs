@@ -136,7 +136,7 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers
     /// </summary>
     /// <param name="message">Messages can be structured objects, e.g. nested JSON objects and arrays, can contain JavaScript values (strings, numbers, Date objects, etc.), and can contain certain data objects that are marked as <see cref="ITransferable"/> like <see cref="ArrayBuffer"/></param>
     /// <param name="options">The options used for posting the message. Defining the target origin and what objects should be transfered.</param>
-    public async Task PostMessage(object message, WindowPostMessageOptions? options = null)
+    public async Task PostMessageAsync(object message, WindowPostMessageOptions? options = null)
     {
         await JSReference.InvokeVoidAsync("postMessage", message, options);
     }

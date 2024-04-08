@@ -57,7 +57,6 @@ else
         response = (await window.ConfirmAsync("You need to confirm this to continue!")).ToString();
     }
 
-
     private async Task Prompt()
     {
         response = (await window.PromptAsync("What is your name?", "Bob"))?.ToString();
@@ -65,6 +64,6 @@ else
 
     private async Task PostMessage()
     {
-        await window.PostMessage($"From Pop-up {Popup} \"{message}\"");
+        await window.PostMessageAsync($"From Pop-up {Popup} \"{message}\"");
     }
 }
