@@ -82,6 +82,10 @@
             await popup.DisposeAsync();
         }
         await messageEventListener.DisposeAsync();
+        if (window is not null)
+        {
+            await window.DisposeAsync();
+        }
     }
 
     public record LogEntry(string message, string origin)

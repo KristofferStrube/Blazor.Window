@@ -11,7 +11,7 @@ public interface IWindowService
     /// Returns a <see cref="Window"/>.
     /// </summary>
     /// <remarks>
-    /// Following calls to this method on the same instance of a <see cref="IWindowService"/> will return the same instance.
+    /// You should dispose of this <see cref="Window"/> once you are done using it to free the reference.
     /// </remarks>
     Task<Window> GetWindowAsync();
 }
