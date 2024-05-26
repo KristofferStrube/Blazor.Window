@@ -1,0 +1,49 @@
+﻿@page "/Events"
+@using KristofferStrube.Blazor.DOM
+@inject IWindowService WindowService
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<PageTitle>Blazor Window - Events</PageTitle>
+
+<h2>Events</h2>
+
+<p>
+    There are exposed many events that we can listen for on the <code>Window</code>.
+</p>
+
+<p>Try resizing the window. <small>On mobile you can resize the window by changing the browser window to landscape mode.</small></p>
+
+@if (lastResizeTime is not null)
+{
+    <p>
+        The window was resized at the time: <span class="badge bg-primary">@Math.Round((decimal)lastResizeTime, 0)</span>
+    </p>
+}
+
+@code {
+    Window? window;
+    EventListener<Event>? resizeEventListener;
+    double? lastResizeTime;
+
+    protected override async Task OnInitializedAsync()
+    {
+        window = await WindowService.GetWindowAsync();
+        resizeEventListener = await EventListener<Event>.CreateAsync(JSRuntime, async e =>
+        {
+            lastResizeTime = await e.GetTimeStampAsync();
+            StateHasChanged();
+        });
+        await window.AddOnResizeEventListenerAsync(resizeEventListener);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (resizeEventListener is not null && window is not null)
+        {
+            await window.RemoveOnResizeEventListenerAsync(resizeEventListener);
+            await resizeEventListener.DisposeAsync();
+            await window.DisposeAsync();
+        }
+    }
+}

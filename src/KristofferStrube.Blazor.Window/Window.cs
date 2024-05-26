@@ -10,7 +10,7 @@ namespace KristofferStrube.Blazor.Window;
 /// The global object for a browser window.
 /// </summary>
 /// <remarks><see href="https://html.spec.whatwg.org/#the-window-object">See the API definition here</see>.</remarks>
-public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers
+public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, IGlobalEventHandlers
 {
     /// <summary>
     /// A lazily loaded task that evaluates to a helper module instance from the Blazor.Window library.
@@ -151,5 +151,17 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers
     public async Task RemoveOnMessageEventListenerAsync(EventListener<MessageEvent> callback, EventListenerOptions? options = null)
     {
         await RemoveEventListenerAsync("message", callback, options);
+    }
+
+    /// <inheritdoc/>
+    public async Task AddOnResizeEventListenerAsync(EventListener<Event> callback, AddEventListenerOptions? options = null)
+    {
+        await AddEventListenerAsync("resize", callback, options);
+    }
+
+    /// <inheritdoc/>
+    public async Task RemoveOnResizeEventListenerAsync(EventListener<Event> callback, EventListenerOptions? options = null)
+    {
+        await RemoveEventListenerAsync("resize", callback, options);
     }
 }
