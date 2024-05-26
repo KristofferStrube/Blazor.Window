@@ -164,4 +164,28 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, I
     {
         await RemoveEventListenerAsync("resize", callback, options);
     }
+
+    /// <inheritdoc/>
+    public async Task AddOnScrollEventListenerAsync(EventListener<Event> callback, AddEventListenerOptions? options = null)
+    {
+        await AddEventListenerAsync("scroll", callback, options);
+    }
+
+    /// <inheritdoc/>
+    public async Task RemoveOnScrollEventListenerAsync(EventListener<Event> callback, EventListenerOptions? options = null)
+    {
+        await RemoveEventListenerAsync("scroll", callback, options);
+    }
+
+    /// <inheritdoc/>
+    public async Task AddOnScrollEndEventListenerAsync(EventListener<Event> callback, AddEventListenerOptions? options = null)
+    {
+        await AddEventListenerAsync("scrollend", callback, options);
+    }
+
+    /// <inheritdoc/>
+    public async Task RemoveOnScrollEndEventListenerAsync(EventListener<Event> callback, EventListenerOptions? options = null)
+    {
+        await RemoveEventListenerAsync("scrollend", callback, options);
+    }
 }

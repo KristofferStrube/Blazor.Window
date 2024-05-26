@@ -8,23 +8,38 @@
 
 <h2>Events</h2>
 
-<p>
-    There are exposed many events that we can listen for on the <code>Window</code>.
-</p>
-
-<p>Try resizing the window. <small>On mobile you can resize the window by changing the browser window to landscape mode.</small></p>
-
-@if (lastResizeTime is not null)
-{
+<div style="height:130vh;">
     <p>
-        The window was resized at the time: <span class="badge bg-primary">@Math.Round((decimal)lastResizeTime, 0)</span>
+        There are exposed many events that we can listen for on the <code>Window</code>.
     </p>
-}
+
+    <p>
+        Try resizing the window or scrolling in the window.
+        <br />
+        <small>On mobile you can resize the window by changing the browser window to landscape mode.</small>
+    </p>
+
+    @if (lastResizeTime is not null)
+    {
+        <p>
+            The window was resized at the time: <span class="badge bg-primary">@Math.Round((decimal)lastResizeTime, 0)</span>
+        </p>
+    }
+
+    @if (lastScrollTime is not null)
+    {
+        <p>
+            The window wiewport was scrolled at the time: <span class="badge bg-primary">@Math.Round((decimal)lastScrollTime, 0)</span>
+        </p>
+    }
+</div>
 
 @code {
     Window? window;
     EventListener<Event>? resizeEventListener;
+    EventListener<Event>? scrollEventListener;
     double? lastResizeTime;
+    double? lastScrollTime;
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,7 +49,13 @@
             lastResizeTime = await e.GetTimeStampAsync();
             StateHasChanged();
         });
+        scrollEventListener = await EventListener<Event>.CreateAsync(JSRuntime, async e =>
+        {
+            lastScrollTime = await e.GetTimeStampAsync();
+            StateHasChanged();
+        });
         await window.AddOnResizeEventListenerAsync(resizeEventListener);
+        await window.AddOnScrollEventListenerAsync(scrollEventListener);
     }
 
     public async ValueTask DisposeAsync()
@@ -43,6 +64,14 @@
         {
             await window.RemoveOnResizeEventListenerAsync(resizeEventListener);
             await resizeEventListener.DisposeAsync();
+        }
+        if (scrollEventListener is not null && window is not null)
+        {
+            await window.RemoveOnScrollEventListenerAsync(scrollEventListener);
+            await scrollEventListener.DisposeAsync();
+        }
+        if (window is not null)
+        {
             await window.DisposeAsync();
         }
     }
