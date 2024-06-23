@@ -1,5 +1,6 @@
 ﻿@page "/Events"
 @using KristofferStrube.Blazor.DOM
+@using KristofferStrube.Blazor.WebIDL.Exceptions
 @inject IWindowService WindowService
 @inject IJSRuntime JSRuntime
 @implements IAsyncDisposable
@@ -13,8 +14,11 @@
         There are exposed many events that we can listen for on the <code>Window</code>.
     </p>
 
+    <h3>
+        Resize
+    </h3>
     <p>
-        Try resizing the window or scrolling in the window.
+        Try resizing the window.
         <br />
         <small>On mobile you can resize the window by changing the browser window to landscape mode.</small>
     </p>
@@ -26,20 +30,45 @@
         </p>
     }
 
+    <h3>
+        Scroll
+    </h3>
+    <p>
+        Try scrolling in this window.
+    </p>
+
     @if (lastScrollTime is not null)
     {
         <p>
             The window wiewport was scrolled at the time: <span class="badge bg-primary">@Math.Round((decimal)lastScrollTime, 0)</span>
         </p>
     }
+
+    <h3>
+        Errors
+    </h3>
+
+    <p>
+        Press the below button to make a JS error happen. We capture this error and prints its details below.
+    </p>
+
+    <button class="btn btn-warning" @onclick=CauseError>Cause error!</button>
+
+    @if (errors is not "")
+    {
+        <pre><code>@errors</code></pre>
+    }
+
 </div>
 
 @code {
     Window? window;
     EventListener<Event>? resizeEventListener;
     EventListener<Event>? scrollEventListener;
+    EventListener<ErrorEvent>? errorEventListener;
     double? lastResizeTime;
     double? lastScrollTime;
+    string errors = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,8 +83,23 @@
             lastScrollTime = await e.GetTimeStampAsync();
             StateHasChanged();
         });
+        errorEventListener = await EventListener<ErrorEvent>.CreateAsync(JSRuntime, async e =>
+        {
+            WebIDLException? exception = await e.GetErrorAsExceptionAsync();
+
+            errors += $"{(exception?.GetType().ToString() ?? "Error")} : \"{exception?.Message}\" at {await e.GetFileNameAsync()} L:{await e.GetLineNumberAsync()} C:{await e.GetColumnNumberAsync()} \n";
+            StateHasChanged();
+        });
         await window.AddOnResizeEventListenerAsync(resizeEventListener);
         await window.AddOnScrollEventListenerAsync(scrollEventListener);
+        await window.AddOnErrorEventListenerAsync(errorEventListener);
+    }
+
+    public async Task CauseError()
+    {
+        if (window is null) return;
+
+        await window.PostMessageAsync("causeError");
     }
 
     public async ValueTask DisposeAsync()
@@ -69,6 +113,11 @@
         {
             await window.RemoveOnScrollEventListenerAsync(scrollEventListener);
             await scrollEventListener.DisposeAsync();
+        }
+        if (errorEventListener is not null && window is not null)
+        {
+            await window.RemoveOnErrorEventListenerAsync(errorEventListener);
+            await errorEventListener.DisposeAsync();
         }
         if (window is not null)
         {

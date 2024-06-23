@@ -40,6 +40,22 @@
             window.location.replace(window.location.origin + window.location.pathname + '/' + window.location.search);
         }
     </script>
+    <script>
+        // used in event demo to cause some error.
+        window.onmessage = (e) => {
+            if (e.data == "causeError") {
+                if (Math.random() < 0.33) {
+                    throw new SyntaxError("This was thrown and not caught!");
+                }
+                else if (Math.random() < 0.6) {
+                    throw new DOMException("This was thrown and not caught!", "OperationError");
+                }
+                else {
+                    throw new DOMException("This was thrown and not caught!", "SyntaxError");
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />

@@ -2,7 +2,7 @@
 using KristofferStrube.Blazor.Window.Extensions;
 using Microsoft.JSInterop;
 
-namespace KristofferStrube.Blazor.Window.Extensions;
+namespace KristofferStrube.Blazor.Window;
 /// <summary>
 /// A base class for all base wrappers introduced in Blazor.Window.
 /// </summary>

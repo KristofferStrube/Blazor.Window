@@ -10,6 +10,7 @@ namespace KristofferStrube.Blazor.Window;
 /// The global object for a browser window.
 /// </summary>
 /// <remarks><see href="https://html.spec.whatwg.org/#the-window-object">See the API definition here</see>.</remarks>
+[IJSWrapperConverter]
 public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, IGlobalEventHandlers
 {
     /// <summary>
@@ -18,7 +19,7 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, I
     protected readonly Lazy<Task<IJSObjectReference>> windowHelperTask;
 
     /// <inheritdoc/>
-    public static async Task<Window> CreateAsync(IJSRuntime jSRuntime, IJSObjectReference jSReference)
+    public static new async Task<Window> CreateAsync(IJSRuntime jSRuntime, IJSObjectReference jSReference)
     {
         return await CreateAsync(jSRuntime, jSReference, new());
     }
@@ -151,6 +152,30 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, I
     public async Task RemoveOnMessageEventListenerAsync(EventListener<MessageEvent> callback, EventListenerOptions? options = null)
     {
         await RemoveEventListenerAsync("message", callback, options);
+    }
+
+    /// <inheritdoc/>
+    public async Task AddOnErrorEventListenerAsync(EventListener<ErrorEvent> callback, AddEventListenerOptions? options = null)
+    {
+        await JSReference.InvokeVoidAsync("addEventListener", "error", callback, options);
+    }
+
+    /// <inheritdoc/>
+    public async Task AddOnErrorEventListenerAsync(EventListener<Event> callback, AddEventListenerOptions? options = null)
+    {
+        await JSReference.InvokeVoidAsync("addEventListener", "error", callback, options);
+    }
+
+    /// <inheritdoc/>
+    public async Task RemoveOnErrorEventListenerAsync(EventListener<ErrorEvent> callback, EventListenerOptions? options = null)
+    {
+        await JSReference.InvokeVoidAsync("removeEventListener", "error", callback, options);
+    }
+
+    /// <inheritdoc/>
+    public async Task RemoveOnErrorEventListenerAsync(EventListener<Event> callback, EventListenerOptions? options = null)
+    {
+        await JSReference.InvokeVoidAsync("removeEventListener", "error", callback, options);
     }
 
     /// <inheritdoc/>
