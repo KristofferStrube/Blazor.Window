@@ -45,13 +45,13 @@
         window.onmessage = (e) => {
             if (e.data == "causeError") {
                 if (Math.random() < 0.33) {
-                    throw new SyntaxError("This was thrown and not caught!");
+                    throw new SyntaxError("Message 1 was not caught.");
                 }
                 else if (Math.random() < 0.6) {
-                    throw new DOMException("This was thrown and not caught!", "OperationError");
+                    throw new DOMException("Message 2 was not caught.", "OperationError");
                 }
                 else {
-                    throw new DOMException("This was thrown and not caught!", "SyntaxError");
+                    throw new DOMException("Message 3 was not caught.", "SyntaxError");
                 }
             }
         }
