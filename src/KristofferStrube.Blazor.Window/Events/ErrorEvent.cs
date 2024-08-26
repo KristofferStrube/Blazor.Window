@@ -108,7 +108,7 @@ public class ErrorEvent : Event, IJSCreatable<ErrorEvent>
     ///     If the default of <see langword="null"/> is used then it is initialized to a value equivalent to <see cref="ErrorMappers.Default"/>.
     /// </param>
     /// <param name="extraErrorProperties">Extra properties that should be mapped for errors.</param>
-    /// <returns>A <see cref="WebIDLException"/> if the error of the event is an Error type which has a mapping in <see cref="ErrorMapper"/>; Else it returns <see langword="null"/>.</returns>
+    /// <returns>A <see cref="WebIDLException"/> if the error of the event is an Error type which has a mapping in <paramref name="errorMapper"/>; Else it returns <see langword="null"/>.</returns>
     public async Task<WebIDLException?> GetErrorAsExceptionAsync(Dictionary<string, Func<JSError, WebIDLException>>? errorMapper = null, string[]? extraErrorProperties = null)
     {
         errorMapper ??= new(ErrorMappers.Default);
