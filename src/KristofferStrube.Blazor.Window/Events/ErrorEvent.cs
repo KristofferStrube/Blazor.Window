@@ -15,18 +15,6 @@ namespace KristofferStrube.Blazor.Window;
 public class ErrorEvent : Event, IJSCreatable<ErrorEvent>
 {
     /// <summary>
-    /// Extra properties that should be mapped for errors.
-    /// </summary>
-    public string[]? ExtraErrorProperties { get; set; }
-
-    /// <summary>
-    /// A dictionary that maps from error names to a creator method that takes the name, message, stack trace, and inner exception and creates a new <see cref="WebIDLException"/>. Can be used to add handlers for additional JS error types.
-    /// <br />
-    /// The default value is <see cref="ErrorMappers.Default"/>.
-    /// </summary>
-    public Dictionary<string, Func<JSError, WebIDLException>> ErrorMapper { get; set; } = new(ErrorMappers.Default);
-
-    /// <summary>
     /// A lazily loaded task that evaluates to a helper module instance from the Blazor.Window library.
     /// </summary>
     protected readonly Lazy<Task<IJSObjectReference>> windowHelperTask;
@@ -100,12 +88,20 @@ public class ErrorEvent : Event, IJSCreatable<ErrorEvent>
     /// <summary>
     /// The object representing the error (e.g., the exception object in the case of an uncaught exception) as a <see cref="WebIDLException"/>.
     /// </summary>
+    /// <param name="errorMapper">
+    ///     A dictionary that maps from error names to a creator method that takes the name, message, stack trace, and inner exception and creates a new <see cref="WebIDLException"/>.
+    ///     Can be used to add handlers for additional JS error types.
+    ///     If the default of <see langword="null"/> is used then it is initialized to a value equivalent to <see cref="ErrorMappers.Default"/>.
+    /// </param>
+    /// <param name="extraErrorProperties">Extra properties that should be mapped for errors.</param>
     /// <returns>A <see cref="WebIDLException"/> if the error of the event is an Error type which has a mapping in <see cref="ErrorMapper"/>; Else it returns <see langword="null"/>.</returns>
-    public async Task<WebIDLException?> GetErrorAsExceptionAsync()
+    public async Task<WebIDLException?> GetErrorAsExceptionAsync(Dictionary<string, Func<JSError, WebIDLException>>? errorMapper = null, string[]? extraErrorProperties = null)
     {
+        errorMapper ??= new(ErrorMappers.Default);
+
         IJSObjectReference helper = await windowHelperTask.Value;
         IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttribute", JSReference, "error");
-        string serializedError = await helper.InvokeAsync<string>("formatError", jSInstance, ExtraErrorProperties);
+        string serializedError = await helper.InvokeAsync<string>("formatError", jSInstance, extraErrorProperties);
 
         JSError? error = null;
 
@@ -122,7 +118,7 @@ public class ErrorEvent : Event, IJSCreatable<ErrorEvent>
             return null;
         }
 
-        if (ErrorMapper.TryGetValue(error.Name, out Func<JSError, WebIDLException>? creator))
+        if (errorMapper.TryGetValue(error.Name, out Func<JSError, WebIDLException>? creator))
         {
             return creator(error);
         }
