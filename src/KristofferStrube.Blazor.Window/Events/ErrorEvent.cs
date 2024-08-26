@@ -19,6 +19,20 @@ public class ErrorEvent : Event, IJSCreatable<ErrorEvent>
     /// </summary>
     protected readonly Lazy<Task<IJSObjectReference>> windowHelperTask;
 
+    /// <summary>
+    /// Creates an <see cref="ErrorEvent"/> using the standard constructor.
+    /// </summary>
+    /// <param name="jSRuntime">An <see cref="IJSRuntime"/> instance.</param>
+    /// <param name="type">The type of the <see cref="Event"/>.</param>
+    /// <param name="eventInitDict">Extra options for setting options specific to the the <see cref="ErrorEvent"/>.</param>
+    /// <returns>A new instance of an <see cref="ErrorEvent"/>.</returns>
+    public static async Task<ErrorEvent> CreateAsync(IJSRuntime jSRuntime, string type, ErrorEventInit? eventInitDict = null)
+    {
+        await using IJSObjectReference helper = await jSRuntime.GetHelperAsync();
+        IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("constructErrorEvent", type, eventInitDict);
+        return new ErrorEvent(jSRuntime, jSInstance, new() { DisposesJSReference = true });
+    }
+
     /// <inheritdoc/>
     public static new async Task<ErrorEvent> CreateAsync(IJSRuntime jSRuntime, IJSObjectReference jSReference)
     {
