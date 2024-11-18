@@ -28,6 +28,8 @@ The sample project can be demoed at https://kristofferstrube.github.io/Blazor.Wi
 
 On each page, you can find the corresponding code for the example in the top right corner.
 
+On the [API Coverage Status](https://kristofferstrube.github.io/Blazor.Window/Status) page, you can see how much of the WebIDL specs this wrapper has covered.
+
 # Related repositories
 The library uses the following other packages to support its features:
 - https://github.com/KristofferStrube/Blazor.WebIDL (To make error handling JSInterop)
