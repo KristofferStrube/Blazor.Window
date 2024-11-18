@@ -50,7 +50,6 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, I
     /// <summary>
     /// Gets this window.
     /// </summary>
-    /// <returns></returns>
     public async Task<Window> GetSelfAsync()
     {
         IJSObjectReference helper = await windowHelperTask.Value;
@@ -59,9 +58,82 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, I
     }
 
     /// <summary>
+    /// Gets the name of this <see cref="Window"/>.
+    /// </summary>
+    /// <remarks>
+    /// This has historically been used as a way to parse information from a parent/opener context, but has now been replace by the better alternative: <see cref="PostMessageAsync(object, WindowPostMessageOptions?)"/>.
+    /// </remarks>
+    public async Task<string> GetNameAsync()
+    {
+        IJSObjectReference helper = await windowHelperTask.Value;
+        return await helper.InvokeAsync<string>("getAttribute", JSReference, "name");
+    }
+
+    /// <summary>
+    /// Sets the name of this <see cref="Window"/>.
+    /// </summary>
+    /// <remarks>
+    /// This has historically been used as a way to parse information from a parent/opener context, but has now been replace by the better alternative: <see cref="PostMessageAsync(object, WindowPostMessageOptions?)"/>.
+    /// </remarks>
+    public async Task SetNameAsync(string value)
+    {
+        IJSObjectReference helper = await windowHelperTask.Value;
+        await helper.InvokeVoidAsync("setAttribute", JSReference, "name", value);
+    }
+
+    /// <summary>
+    /// Closes the window.
+    /// </summary>
+    /// <remarks>
+    /// This can only be used from the parent/opener context not from the window itself.
+    /// </remarks>
+    public async Task CloseAsync()
+    {
+        await JSReference.InvokeVoidAsync("close");
+    }
+
+    /// <summary>
+    /// Gets a boolean that indicates whether the windows is closed.
+    /// </summary>
+    public async Task<bool> GetClosedAsync()
+    {
+        IJSObjectReference helper = await windowHelperTask.Value;
+        return await helper.InvokeAsync<bool>("getAttribute", JSReference, "closed");
+    }
+
+    /// <summary>
+    /// Stops loading the document of this window.
+    /// </summary>
+    public async Task StopAsync()
+    {
+        await JSReference.InvokeVoidAsync("close");
+    }
+
+    /// <summary>
+    /// Requests that the window gets focus.
+    /// </summary>
+    /// <remarks>
+    /// Most browsers do now honor this function.
+    /// </remarks>
+    public async Task FocusAsync()
+    {
+        await JSReference.InvokeVoidAsync("focus");
+    }
+
+    /// <summary>
+    /// Requests that the window loses focus.
+    /// </summary>
+    /// <remarks>
+    /// Most browsers do now honor this function.
+    /// </remarks>
+    public async Task BlurAsync()
+    {
+        await JSReference.InvokeVoidAsync("blur");
+    }
+
+    /// <summary>
     /// Gets the opener navigable of this <see cref="Window"/>.
     /// </summary>
-    /// <returns></returns>
     public async Task<Window?> GetOpenerAsync()
     {
         IJSObjectReference helper = await windowHelperTask.Value;
@@ -72,7 +144,6 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, I
     /// <summary>
     /// Gets the parent navigable of this <see cref="Window"/>.
     /// </summary>
-    /// <returns></returns>
     public async Task<Window?> GetParentAsync()
     {
         IJSObjectReference helper = await windowHelperTask.Value;
@@ -126,10 +197,22 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, I
     /// If the <paramref name="defaultValue"/> is set, then the given value is used as a default.
     /// </summary>
     /// <param name="message">The message that will displayed in the dialog.</param>
-    /// <param name="defaultValue"></param>
+    /// <param name="defaultValue">The value that will be used as the default value in the prompt input.</param>
     public async Task<string?> PromptAsync(string message = "", string defaultValue = "")
     {
         return await JSReference.InvokeAsync<string>("prompt", message, defaultValue);
+    }
+
+    /// <summary>
+    /// Requests that the document opens a print dialog when it is loaded. If it is already loaded then it opens the print dialog or ignores the request.
+    /// </summary>
+    /// <remarks>
+    /// Before printing, it will dispatch an event that you can subscribe to via <see cref="IWindowEventHandlers.AddOnBeforePrintEventListenerAsync(EventListener{Event}, AddEventListenerOptions?)"/>.<br />
+    /// After printing, it will dispatch an event that you can subscribe to via <see cref="IWindowEventHandlers.AddOnAfterPrintEventListenerAsync(EventListener{Event}, AddEventListenerOptions?)"/>
+    /// </remarks>
+    public async Task PrintAsync()
+    {
+        await JSReference.InvokeVoidAsync("print");
     }
 
     /// <summary>
