@@ -226,6 +226,30 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, I
     }
 
     /// <inheritdoc/>
+    public async Task AddOnAfterPrintEventListenerAsync(EventListener<Event> callback, AddEventListenerOptions? options = null)
+    {
+        await this.AddOnAfterPrintEventListenerAsync<Window>(callback, options);
+    }
+
+    /// <inheritdoc/>
+    public async Task RemoveOnAfterPrintEventListenerAsync(EventListener<Event> callback, EventListenerOptions? options = null)
+    {
+        await this.RemoveOnAfterPrintEventListenerAsync<Window>(callback, options);
+    }
+
+    /// <inheritdoc/>
+    public async Task AddOnBeforePrintEventListenerAsync(EventListener<Event> callback, AddEventListenerOptions? options = null)
+    {
+        await this.AddOnBeforePrintEventListenerAsync<Window>(callback, options);
+    }
+
+    /// <inheritdoc/>
+    public async Task RemoveOnBeforePrintEventListenerAsync(EventListener<Event> callback, EventListenerOptions? options = null)
+    {
+        await this.RemoveOnBeforePrintEventListenerAsync<Window>(callback, options);
+    }
+
+    /// <inheritdoc/>
     public async Task AddOnMessageEventListenerAsync(EventListener<MessageEvent> callback, AddEventListenerOptions? options = null)
     {
         await this.AddOnMessageEventListenerAsync<Window>(callback, options);
