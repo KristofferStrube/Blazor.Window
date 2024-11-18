@@ -1,0 +1,357 @@
+﻿@page "/Status"
+
+@inject HttpClient HttpClient
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Blazor Window - Status</PageTitle>
+
+<pre><code>
+        @for (int i = 0; i < compareLines.Count; i++)
+        {
+            <span style="background-color:@(compareLines[i].color);display:block;min-height:21px;" >@($"{new string(' ', 3 - i.ToString().Length)}{i}") @compareLines[i].text</span>
+        }
+    </code></pre>
+
+@code {
+    private List<(string text, string color)> compareLines = [];
+
+    protected override void OnInitialized()
+    {
+        compareLines = [];
+        var lines = webIDL.Split('\n');
+        for (int i = 0; i < lines.Count(); i++)
+        {
+            var color = supportedRows.Any(interval => i >= interval.start && i <= interval.end) ? "lightgreen" : "pink";
+            compareLines.Add((lines[i], color));
+        }
+    }
+
+    private (int start, int end)[] supportedRows = new (int start, int end)[] {
+        (0, 1),
+        (3, 6),
+        (30, 31),
+        (33, 33),
+        (45, 49),
+        (53, 53),
+        (57, 58),
+        (60, 62),
+        (164, 164),
+        (194, 194),
+        (220, 222),
+        (242, 242),
+        (248, 248),
+        (263, 264),
+        (267, 267),
+    };
+
+    private const string webIDL = @"[Global=Window,
+ Exposed=Window,
+ LegacyUnenumerableNamedProperties]
+interface Window : EventTarget {
+    // the current browsing context
+    [LegacyUnforgeable] readonly attribute WindowProxy window;
+    [Replaceable] readonly attribute WindowProxy self;
+    [LegacyUnforgeable] readonly attribute Document document;
+    attribute DOMString name;
+    [PutForwards=href, LegacyUnforgeable] readonly attribute Location location;
+    readonly attribute History history;
+    readonly attribute Navigation navigation;
+    readonly attribute CustomElementRegistry customElements;
+    [Replaceable] readonly attribute BarProp locationbar;
+    [Replaceable] readonly attribute BarProp menubar;
+    [Replaceable] readonly attribute BarProp personalbar;
+    [Replaceable] readonly attribute BarProp scrollbars;
+    [Replaceable] readonly attribute BarProp statusbar;
+    [Replaceable] readonly attribute BarProp toolbar;
+    attribute DOMString status;
+    undefined close();
+    readonly attribute boolean closed;
+    undefined stop();
+    undefined focus();
+    undefined blur();
+
+    // other browsing contexts
+    [Replaceable] readonly attribute WindowProxy frames;
+    [Replaceable] readonly attribute unsigned long length;
+    [LegacyUnforgeable] readonly attribute WindowProxy? top;
+    attribute any opener;
+    [Replaceable] readonly attribute WindowProxy? parent;
+    readonly attribute Element? frameElement;
+    WindowProxy? open(optional USVString url = """", optional DOMString target = ""_blank"", optional [LegacyNullToEmptyString] DOMString features = """");
+
+    // Since this is the global object, the IDL named getter adds a NamedPropertiesObject exotic
+    // object on the prototype chain. Indeed, this does not make the global object an exotic object.
+    // Indexed access is taken care of by the WindowProxy exotic object.
+    getter object (DOMString name);
+
+    // the user agent
+    readonly attribute Navigator navigator;
+    [Replaceable] readonly attribute Navigator clientInformation; // legacy alias of .navigator
+    readonly attribute boolean originAgentCluster;
+
+    // user prompts
+    undefined alert();
+    undefined alert(DOMString message);
+    boolean confirm(optional DOMString message = """");
+    DOMString? prompt(optional DOMString message = """", optional DOMString default = """");
+    undefined print();
+
+    undefined postMessage(any message, USVString targetOrigin, optional sequence<object> transfer = []);
+    undefined postMessage(any message, optional WindowPostMessageOptions options = {});
+
+    // also has obsolete members
+};
+Window includes GlobalEventHandlers;
+Window includes WindowEventHandlers;
+
+dictionary WindowPostMessageOptions : StructuredSerializeOptions {
+    USVString targetOrigin = ""/"";
+};
+
+[Exposed=Window]
+interface Location { // but see also additional creation steps and overridden internal methods
+    [LegacyUnforgeable] stringifier attribute USVString href;
+    [LegacyUnforgeable] readonly attribute USVString origin;
+    [LegacyUnforgeable] attribute USVString protocol;
+    [LegacyUnforgeable] attribute USVString host;
+    [LegacyUnforgeable] attribute USVString hostname;
+    [LegacyUnforgeable] attribute USVString port;
+    [LegacyUnforgeable] attribute USVString pathname;
+    [LegacyUnforgeable] attribute USVString search;
+    [LegacyUnforgeable] attribute USVString hash;
+
+    [LegacyUnforgeable] undefined assign(USVString url);
+    [LegacyUnforgeable] undefined replace(USVString url);
+    [LegacyUnforgeable] undefined reload();
+
+    [LegacyUnforgeable, SameObject] readonly attribute DOMStringList ancestorOrigins;
+};
+
+enum ScrollRestoration { ""auto"", ""manual"" };
+
+[Exposed=Window]
+interface History {
+    readonly attribute unsigned long length;
+    attribute ScrollRestoration scrollRestoration;
+    readonly attribute any state;
+    undefined go(optional long delta = 0);
+    undefined back();
+    undefined forward();
+    undefined pushState(any data, DOMString unused, optional USVString? url = null);
+    undefined replaceState(any data, DOMString unused, optional USVString? url = null);
+};
+
+[Exposed=Window]
+interface Navigation : EventTarget {
+    sequence<NavigationHistoryEntry> entries();
+    readonly attribute NavigationHistoryEntry? currentEntry;
+    undefined updateCurrentEntry(NavigationUpdateCurrentEntryOptions options);
+    readonly attribute NavigationTransition? transition;
+    readonly attribute NavigationActivation? activation;
+
+    readonly attribute boolean canGoBack;
+    readonly attribute boolean canGoForward;
+
+    NavigationResult navigate(USVString url, optional NavigationNavigateOptions options = {});
+    NavigationResult reload(optional NavigationReloadOptions options = {});
+
+    NavigationResult traverseTo(DOMString key, optional NavigationOptions options = {});
+    NavigationResult back(optional NavigationOptions options = {});
+    NavigationResult forward(optional NavigationOptions options = {});
+
+    attribute EventHandler onnavigate;
+    attribute EventHandler onnavigatesuccess;
+    attribute EventHandler onnavigateerror;
+    attribute EventHandler oncurrententrychange;
+};
+
+dictionary NavigationUpdateCurrentEntryOptions {
+    required any state;
+};
+
+dictionary NavigationOptions {
+    any info;
+};
+
+dictionary NavigationNavigateOptions : NavigationOptions {
+    any state;
+    NavigationHistoryBehavior history = ""auto"";
+};
+
+dictionary NavigationReloadOptions : NavigationOptions {
+    any state;
+};
+
+dictionary NavigationResult {
+    Promise<NavigationHistoryEntry> committed;
+    Promise<NavigationHistoryEntry> finished;
+};
+
+enum NavigationHistoryBehavior {
+    ""auto"",
+    ""push"",
+    ""replace""
+};
+
+[Exposed=Window]
+interface CustomElementRegistry {
+    [CEReactions] undefined define(DOMString name, CustomElementConstructor constructor, optional ElementDefinitionOptions options = {});
+    (CustomElementConstructor or undefined) get(DOMString name);
+    DOMString? getName(CustomElementConstructor constructor);
+    Promise<CustomElementConstructor> whenDefined(DOMString name);
+    [CEReactions] undefined upgrade(Node root);
+};
+
+callback CustomElementConstructor = HTMLElement ();
+
+dictionary ElementDefinitionOptions {
+    DOMString extends;
+};
+
+interface mixin GlobalEventHandlers {
+    attribute EventHandler onabort;
+    attribute EventHandler onauxclick;
+    attribute EventHandler onbeforeinput;
+    attribute EventHandler onbeforematch;
+    attribute EventHandler onbeforetoggle;
+    attribute EventHandler onblur;
+    attribute EventHandler oncancel;
+    attribute EventHandler oncanplay;
+    attribute EventHandler oncanplaythrough;
+    attribute EventHandler onchange;
+    attribute EventHandler onclick;
+    attribute EventHandler onclose;
+    attribute EventHandler oncontextlost;
+    attribute EventHandler oncontextmenu;
+    attribute EventHandler oncontextrestored;
+    attribute EventHandler oncopy;
+    attribute EventHandler oncuechange;
+    attribute EventHandler oncut;
+    attribute EventHandler ondblclick;
+    attribute EventHandler ondrag;
+    attribute EventHandler ondragend;
+    attribute EventHandler ondragenter;
+    attribute EventHandler ondragleave;
+    attribute EventHandler ondragover;
+    attribute EventHandler ondragstart;
+    attribute EventHandler ondrop;
+    attribute EventHandler ondurationchange;
+    attribute EventHandler onemptied;
+    attribute EventHandler onended;
+    attribute OnErrorEventHandler onerror;
+    attribute EventHandler onfocus;
+    attribute EventHandler onformdata;
+    attribute EventHandler oninput;
+    attribute EventHandler oninvalid;
+    attribute EventHandler onkeydown;
+    attribute EventHandler onkeypress;
+    attribute EventHandler onkeyup;
+    attribute EventHandler onload;
+    attribute EventHandler onloadeddata;
+    attribute EventHandler onloadedmetadata;
+    attribute EventHandler onloadstart;
+    attribute EventHandler onmousedown;
+    [LegacyLenientThis] attribute EventHandler onmouseenter;
+    [LegacyLenientThis] attribute EventHandler onmouseleave;
+    attribute EventHandler onmousemove;
+    attribute EventHandler onmouseout;
+    attribute EventHandler onmouseover;
+    attribute EventHandler onmouseup;
+    attribute EventHandler onpaste;
+    attribute EventHandler onpause;
+    attribute EventHandler onplay;
+    attribute EventHandler onplaying;
+    attribute EventHandler onprogress;
+    attribute EventHandler onratechange;
+    attribute EventHandler onreset;
+    attribute EventHandler onresize;
+    attribute EventHandler onscroll;
+    attribute EventHandler onscrollend;
+    attribute EventHandler onsecuritypolicyviolation;
+    attribute EventHandler onseeked;
+    attribute EventHandler onseeking;
+    attribute EventHandler onselect;
+    attribute EventHandler onslotchange;
+    attribute EventHandler onstalled;
+    attribute EventHandler onsubmit;
+    attribute EventHandler onsuspend;
+    attribute EventHandler ontimeupdate;
+    attribute EventHandler ontoggle;
+    attribute EventHandler onvolumechange;
+    attribute EventHandler onwaiting;
+    attribute EventHandler onwebkitanimationend;
+    attribute EventHandler onwebkitanimationiteration;
+    attribute EventHandler onwebkitanimationstart;
+    attribute EventHandler onwebkittransitionend;
+    attribute EventHandler onwheel;
+};
+
+interface mixin WindowEventHandlers {
+    attribute EventHandler onafterprint;
+    attribute EventHandler onbeforeprint;
+    attribute OnBeforeUnloadEventHandler onbeforeunload;
+    attribute EventHandler onhashchange;
+    attribute EventHandler onlanguagechange;
+    attribute EventHandler onmessage;
+    attribute EventHandler onmessageerror;
+    attribute EventHandler onoffline;
+    attribute EventHandler ononline;
+    attribute EventHandler onpagehide;
+    attribute EventHandler onpagereveal;
+    attribute EventHandler onpageshow;
+    attribute EventHandler onpageswap;
+    attribute EventHandler onpopstate;
+    attribute EventHandler onrejectionhandled;
+    attribute EventHandler onstorage;
+    attribute EventHandler onunhandledrejection;
+    attribute EventHandler onunload;
+};
+
+[Exposed=(Window,Worker,AudioWorklet)]
+interface MessageEvent : Event {
+    constructor(DOMString type, optional MessageEventInit eventInitDict = {});
+
+    readonly attribute any data;
+    readonly attribute USVString origin;
+    readonly attribute DOMString lastEventId;
+    readonly attribute MessageEventSource? source;
+    readonly attribute FrozenArray<MessagePort> ports;
+
+    undefined initMessageEvent(DOMString type,
+        optional boolean bubbles = false,
+        optional boolean cancelable = false,
+        optional any data = null,
+        optional USVString origin = """",
+        optional DOMString lastEventId = """",
+        optional MessageEventSource? source = null,
+        optional sequence<MessagePort> ports = []);
+};
+
+dictionary MessageEventInit : EventInit {
+    any data = null;
+    USVString origin = "";
+    DOMString lastEventId = "";
+    MessageEventSource? source = null;
+    sequence<MessagePort> ports = [];
+};
+
+typedef (WindowProxy or MessagePort or ServiceWorker) MessageEventSource;
+
+[Exposed=(Window,Worker,AudioWorklet), Transferable]
+interface MessagePort : EventTarget {
+    undefined postMessage(any message, sequence<object> transfer);
+    undefined postMessage(any message, optional StructuredSerializeOptions options = {});
+    undefined start();
+    undefined close();
+
+    // event handlers
+    attribute EventHandler onmessage;
+    attribute EventHandler onmessageerror;
+    attribute EventHandler onclose;
+};
+
+dictionary StructuredSerializeOptions {
+    sequence<object> transfer = [];
+};";
+
+}

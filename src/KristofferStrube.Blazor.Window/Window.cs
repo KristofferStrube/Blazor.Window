@@ -59,17 +59,6 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, I
     }
 
     /// <summary>
-    /// Gets the parent navigable of this <see cref="Window"/>.
-    /// </summary>
-    /// <returns></returns>
-    public async Task<Window?> GetParentAsync()
-    {
-        IJSObjectReference helper = await windowHelperTask.Value;
-        IJSObjectReference? jSInstance = await helper.InvokeAsync<IJSObjectReference?>("getAttribute", JSReference, "parent");
-        return jSInstance is null ? null : new(JSRuntime, jSInstance, new() { DisposesJSReference = true });
-    }
-
-    /// <summary>
     /// Gets the opener navigable of this <see cref="Window"/>.
     /// </summary>
     /// <returns></returns>
@@ -77,6 +66,17 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, I
     {
         IJSObjectReference helper = await windowHelperTask.Value;
         IJSObjectReference? jSInstance = await helper.InvokeAsync<IJSObjectReference?>("getAttribute", JSReference, "opener");
+        return jSInstance is null ? null : new(JSRuntime, jSInstance, new() { DisposesJSReference = true });
+    }
+
+    /// <summary>
+    /// Gets the parent navigable of this <see cref="Window"/>.
+    /// </summary>
+    /// <returns></returns>
+    public async Task<Window?> GetParentAsync()
+    {
+        IJSObjectReference helper = await windowHelperTask.Value;
+        IJSObjectReference? jSInstance = await helper.InvokeAsync<IJSObjectReference?>("getAttribute", JSReference, "parent");
         return jSInstance is null ? null : new(JSRuntime, jSInstance, new() { DisposesJSReference = true });
     }
 
@@ -145,72 +145,72 @@ public class Window : EventTarget, IJSCreatable<Window>, IWindowEventHandlers, I
     /// <inheritdoc/>
     public async Task AddOnMessageEventListenerAsync(EventListener<MessageEvent> callback, AddEventListenerOptions? options = null)
     {
-        await AddEventListenerAsync("message", callback, options);
+        await this.AddOnMessageEventListenerAsync<Window>(callback, options);
     }
 
     /// <inheritdoc/>
     public async Task RemoveOnMessageEventListenerAsync(EventListener<MessageEvent> callback, EventListenerOptions? options = null)
     {
-        await RemoveEventListenerAsync("message", callback, options);
+        await this.RemoveOnMessageEventListenerAsync<Window>(callback, options);
     }
 
     /// <inheritdoc/>
     public async Task AddOnErrorEventListenerAsync(EventListener<ErrorEvent> callback, AddEventListenerOptions? options = null)
     {
-        await JSReference.InvokeVoidAsync("addEventListener", "error", callback, options);
+        await this.AddOnErrorEventListenerAsync<Window>(callback, options);
     }
 
     /// <inheritdoc/>
     public async Task AddOnErrorEventListenerAsync(EventListener<Event> callback, AddEventListenerOptions? options = null)
     {
-        await JSReference.InvokeVoidAsync("addEventListener", "error", callback, options);
+        await this.AddOnErrorEventListenerAsync<Window>(callback, options);
     }
 
     /// <inheritdoc/>
     public async Task RemoveOnErrorEventListenerAsync(EventListener<ErrorEvent> callback, EventListenerOptions? options = null)
     {
-        await JSReference.InvokeVoidAsync("removeEventListener", "error", callback, options);
+        await this.RemoveOnErrorEventListenerAsync<Window>(callback, options);
     }
 
     /// <inheritdoc/>
     public async Task RemoveOnErrorEventListenerAsync(EventListener<Event> callback, EventListenerOptions? options = null)
     {
-        await JSReference.InvokeVoidAsync("removeEventListener", "error", callback, options);
+        await this.RemoveOnErrorEventListenerAsync<Window>(callback, options);
     }
 
     /// <inheritdoc/>
     public async Task AddOnResizeEventListenerAsync(EventListener<Event> callback, AddEventListenerOptions? options = null)
     {
-        await AddEventListenerAsync("resize", callback, options);
+        await this.AddOnResizeEventListenerAsync<Window>(callback, options);
     }
 
     /// <inheritdoc/>
     public async Task RemoveOnResizeEventListenerAsync(EventListener<Event> callback, EventListenerOptions? options = null)
     {
-        await RemoveEventListenerAsync("resize", callback, options);
+        await this.RemoveOnResizeEventListenerAsync<Window>(callback, options);
     }
 
     /// <inheritdoc/>
     public async Task AddOnScrollEventListenerAsync(EventListener<Event> callback, AddEventListenerOptions? options = null)
     {
-        await AddEventListenerAsync("scroll", callback, options);
+        await this.AddOnScrollEventListenerAsync<Window>(callback, options);
     }
 
     /// <inheritdoc/>
     public async Task RemoveOnScrollEventListenerAsync(EventListener<Event> callback, EventListenerOptions? options = null)
     {
-        await RemoveEventListenerAsync("scroll", callback, options);
+        await this.RemoveOnScrollEventListenerAsync<Window>(callback, options);
     }
 
     /// <inheritdoc/>
     public async Task AddOnScrollEndEventListenerAsync(EventListener<Event> callback, AddEventListenerOptions? options = null)
     {
-        await AddEventListenerAsync("scrollend", callback, options);
+        await this.AddOnScrollEndEventListenerAsync<Window>(callback, options);
     }
 
     /// <inheritdoc/>
     public async Task RemoveOnScrollEndEventListenerAsync(EventListener<Event> callback, EventListenerOptions? options = null)
     {
-        await RemoveEventListenerAsync("scrollend", callback, options);
+        await this.RemoveOnScrollEndEventListenerAsync<Window>(callback, options);
     }
 }
